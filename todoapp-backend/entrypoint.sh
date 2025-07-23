@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Running EF Core Migrations..."
+echo "Applying EF Core migrations..."
 dotnet ef database update
 
 echo "Starting ToDo API..."

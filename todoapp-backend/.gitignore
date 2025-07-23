@@ -1,0 +1,23 @@
+## Ignore build outputs
+bin/
+obj/
+
+## Rider/VSCode/VS temp files
+.vscode/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Dotnet artifacts
+*.db
+*.db-shm
+*.db-wal
+
+# Logs
+*.log
+
+# Others
+*.swp
+*.DS_Store

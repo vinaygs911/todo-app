@@ -6,9 +6,10 @@ services:
     container_name: todo-api
     ports:
       - "5000:80"
+    volumes:
+      - ./todoapp-backend/Data:/app/Data
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__DefaultConnection=Data Source=/tmp/ToDoApp.db
+      - ASPNETCORE_ENVIRONMENT=Development
     networks:
       - todo-network
 
@@ -21,7 +22,7 @@ services:
     depends_on:
       - backend
     environment:
-      - VITE_API_BASE_URL=http://localhost:5000
+      - REACT_APP_API_BASE_URL=http://localhost:5000
     networks:
       - todo-network
 

@@ -1,34 +1,32 @@
-# Stage 1: build
+# Stage 1: Build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copy csproj and restore
-COPY ToDo.API/*.csproj ToDo.API/
-COPY ToDo.Application/*.csproj ToDo.Application/
-RUN dotnet restore ToDo.API/ToDo.API.csproj
+# Copy only the project files first for caching
+COPY ./ToDo.API/ToDo.API.csproj ./ToDo.API/
+COPY ./ToDo.Application/ToDo.Application.csproj ./ToDo.Application/
 
-# Copy everything else
+# Restore
+RUN dotnet restore ./ToDo.API/ToDo.API.csproj
+
+# Copy the rest of the source
 COPY . .
 
-# Build
-RUN dotnet publish ToDo.API/ToDo.API.csproj -c Release -o /app/publish
+# Build & publish
+RUN dotnet publish ./ToDo.API/ToDo.API.csproj -c Release -o /app/publish
 
-# Stage 2: runtime
+# Stage 2: Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 
-# Copy published files
 COPY --from=build /app/publish .
 
-# EF Tools
+# EF CLI for migrations
 RUN dotnet tool install --global dotnet-ef
 ENV PATH="${PATH}:/root/.dotnet/tools"
 
-# Copy and make entrypoint executable
 COPY entrypoint.sh .
 RUN chmod +x entrypoint.sh
 
-# Expose port
 EXPOSE 80
-
 ENTRYPOINT ["./entrypoint.sh"]
